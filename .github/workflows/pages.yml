@@ -13,6 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+
     - name: Inject AIRTABLE_API_KEY into index.html
       run: |
         sed -i 's|AIRTABLE_API_KEY_PLACEHOLDER|'"${{ secrets.AIRTABLE_API_KEY }}"'|g' index.html
