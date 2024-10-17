@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -6,25 +6,20 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Inject AIRTABLE_API_KEY into index.html
+      run: |
+        sed -i 's|AIRTABLE_API_KEY_PLACEHOLDER|'"${{ secrets.AIRTABLE_API_KEY }}"'|g' index.html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        node-version: '20' # Actualiza la versión de Node.js
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Build project
-      run: npm run build
-
-    - name: Deploy
-      run: npm run deploy
-      env:
-        AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
-        
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./  # Root directory where index.html is located
+        publish_branch: gh-pages  # Target branch for GitHub Pages
